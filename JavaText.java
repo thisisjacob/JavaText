@@ -22,6 +22,7 @@ public class JavaText extends JFrame {
     private FileReader readFile;
 
 
+
     public static void main(String[] args) {
         new JavaText();
     }
@@ -82,10 +83,15 @@ public class JavaText extends JFrame {
     // creates a new FileWriter object to clear writeFile, saves text to file named javatextwrite
     public void saveFile() {
         try {
-            writeFile = new FileWriter("javatextwrite", false);
-            writeFile.write(mainText.getText());
-            writeFile.flush();
-            writeFile.close();
+            JFileChooser savePath = new JFileChooser();
+            int chosenPath = savePath.showSaveDialog(null);
+
+            if (chosenPath == JFileChooser.APPROVE_OPTION) {
+                writeFile = new FileWriter(savePath.getSelectedFile().getAbsolutePath(), false);
+                writeFile.write(mainText.getText());
+                writeFile.flush();
+                writeFile.close();
+            }   
         }
         catch (IOException exc) {
             System.out.println(exc);
@@ -96,14 +102,19 @@ public class JavaText extends JFrame {
     // creates a new FileReader object to clear readFile, reads each token in javatextwrite, converts it to readable format and appends to mainText
     public void loadFile() {
         try {
-            readFile = new FileReader("javatextwrite");
-            mainText.setText("");
-            int i;
-            while((i = readFile.read()) != -1) {
-                System.out.println("testing");
-                System.out.println(i);                                                      
-                mainText.append(Character.toString((char) i));
-            }
+            JFileChooser loadPath = new JFileChooser();
+            int chosenPath = loadPath.showSaveDialog(null);
+
+            if (chosenPath == loadPath.APPROVE_OPTION) {
+                readFile = new FileReader(loadPath.getSelectedFile().getAbsolutePath());
+                mainText.setText("");
+                int i;
+                while((i = readFile.read()) != -1) {
+                    System.out.println("testing");
+                    System.out.println(i);                                                      
+                    mainText.append(Character.toString((char) i));
+                } 
+            }  
         }
         catch (IOException exc) {
             System.out.println("IO exception when writing to file. Ending program.");
