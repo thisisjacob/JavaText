@@ -18,8 +18,14 @@ public class JavaText extends JFrame {
     private JMenu file;
     private JMenuItem save;
     private JMenuItem load;
+    private JMenuItem exit;
     private FileWriter writeFile;
     private FileReader readFile;
+    private JMenu formatMenu;
+    private JMenu lineWrap;
+    private ButtonGroup lineWrapGroup;
+    private JRadioButtonMenuItem lineWrapTrue;
+    private JRadioButtonMenuItem lineWrapFalse;
 
 
 
@@ -54,6 +60,7 @@ public class JavaText extends JFrame {
         
         save = new JMenuItem("Save");
         load = new JMenuItem("Load");
+        exit = new JMenuItem("Exit");
 
         // adds ActionListeners to save and load buttons
         load.addActionListener(new ActionListener() {
@@ -66,10 +73,38 @@ public class JavaText extends JFrame {
                 saveFile();
             }
         });
-
-
+        exit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
         file.add(save);
         file.add(load);
+        file.add(exit);
+
+        // sets up formatting menu
+        formatMenu = new JMenu("Formatting");
+        lineWrap = new JMenu("Line Wrapping");
+        lineWrapTrue = new JRadioButtonMenuItem("Line Wrap On");
+        lineWrapTrue.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                mainText.setLineWrap(true);
+            }
+        });
+        lineWrapFalse = new JRadioButtonMenuItem("Line Wrap Off");
+        lineWrapFalse.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                mainText.setLineWrap(false);
+            }
+        });
+        lineWrapGroup = new ButtonGroup();
+        lineWrapGroup.add(lineWrapTrue);
+        lineWrapGroup.add(lineWrapFalse);
+        lineWrap.add(lineWrapTrue);
+        lineWrap.add(lineWrapFalse);
+        formatMenu.add(lineWrap);
+        menuBar.add(formatMenu);
+
 
 
         // adds menubar and scrollpane to main window, makes visible
@@ -80,7 +115,7 @@ public class JavaText extends JFrame {
 
     // actions for menu buttons
 
-    // creates a new FileWriter object to clear writeFile, saves text to file named javatextwrite
+    // creates a new FileWriter object to clear writeFile, saves text to user chosen file
     public void saveFile() {
         try {
             JFileChooser savePath = new JFileChooser();
@@ -121,4 +156,5 @@ public class JavaText extends JFrame {
             System.exit(0);
         }
     }
+
 }
