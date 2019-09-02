@@ -11,8 +11,6 @@ public class JavaText extends JFrame {
     private static final int WIDTH = 400;
     private static final int HEIGHT = 400;
 
-    private boolean isStreamOpen;
-
     private JFrame baseWindow;
     private JScrollPane mainTextScrollPane;
     private JTextArea mainText;
@@ -20,7 +18,6 @@ public class JavaText extends JFrame {
     private JMenu file;
     private JMenuItem save;
     private JMenuItem load;
-    //private JFileChooser fileChooser;
     private FileWriter writeFile;
     private FileReader readFile;
 
@@ -56,51 +53,20 @@ public class JavaText extends JFrame {
         
         save = new JMenuItem("Save");
         load = new JMenuItem("Load");
-        //fileChooser = new JFileChooser();
 
-        // reads to file when load menu item is pressed
-
-        //TODO: currently loads the raw ASCII format, convert to human readable form
+        // adds ActionListeners to save and load buttons
         load.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                try {
-                    readFile = new FileReader("javatextwrite");
-                    mainText.setText("");
-                    int i;
-                    while((i = readFile.read()) != -1) {
-                        System.out.println("testing");
-                        System.out.println(i);                                                      
-                        mainText.append(Character.toString((char) i));
-                    }
-                }
-                catch (IOException exc) {
-                    System.out.println("IO exception when writing to file. Ending program.");
-                    System.exit(0);
-                }
+                loadFile();
             }
         });
-
-        // creates new FileWriter object, writes text currently in mainText to a file named javatextwrite
-        // when save button is pressed
         save.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                try {
-                        writeFile = new FileWriter("javatextwrite", false);
-                        writeFile.write(mainText.getText());
-                        writeFile.flush();
-                        writeFile.close();
-                }
-                catch (IOException exc) {
-                    System.out.println(exc);
-                    System.exit(0);
-                }
+                saveFile();
             }
         });
 
 
-        
-        // adds menu items to menu bar
-        //load.addActionListener(this);
         file.add(save);
         file.add(load);
 
@@ -109,5 +75,39 @@ public class JavaText extends JFrame {
         baseWindow.add(menuBar, BorderLayout.NORTH);
         baseWindow.add(mainTextScrollPane, BorderLayout.CENTER);
         baseWindow.setVisible(true);
+    }
+
+    // actions for menu buttons
+
+    // creates a new FileWriter object to clear writeFile, saves text to file named javatextwrite
+    public void saveFile() {
+        try {
+            writeFile = new FileWriter("javatextwrite", false);
+            writeFile.write(mainText.getText());
+            writeFile.flush();
+            writeFile.close();
+        }
+        catch (IOException exc) {
+            System.out.println(exc);
+            System.exit(0);
+        }
+    }
+
+    // creates a new FileReader object to clear readFile, reads each token in javatextwrite, converts it to readable format and appends to mainText
+    public void loadFile() {
+        try {
+            readFile = new FileReader("javatextwrite");
+            mainText.setText("");
+            int i;
+            while((i = readFile.read()) != -1) {
+                System.out.println("testing");
+                System.out.println(i);                                                      
+                mainText.append(Character.toString((char) i));
+            }
+        }
+        catch (IOException exc) {
+            System.out.println("IO exception when writing to file. Ending program.");
+            System.exit(0);
+        }
     }
 }
