@@ -24,13 +24,11 @@ public class JavaText extends JFrame {
     private FileWriter writeFile;
     private FileReader readFile;
 
+
     public static void main(String[] args) {
         new JavaText();
     }
 
-    public class TextArea {
-
-    }
 
     public JavaText() {
         super("JavaText");
@@ -60,15 +58,27 @@ public class JavaText extends JFrame {
         load = new JMenuItem("Load");
         //fileChooser = new JFileChooser();
 
+        // reads to file when load menu item is pressed
 
-        // filereader created for reading items in a file to jtextarea
-        try {
-            readFile = new FileReader("javatextwrite");
-        }
-        catch(IOException exc) {
-            System.out.println("IO exception when creating new FileReader. Ending program.");
-            System.exit(0);
-        }
+        //TODO: currently loads the raw ASCII format, convert to human readable form
+        load.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    readFile = new FileReader("javatextwrite");
+                    mainText.setText("");
+                    int i;
+                    while((i = readFile.read()) != -1) {
+                        System.out.println("testing");
+                        System.out.println(i);                                                      
+                        mainText.append(Character.toString((char) i));
+                    }
+                }
+                catch (IOException exc) {
+                    System.out.println("IO exception when writing to file. Ending program.");
+                    System.exit(0);
+                }
+            }
+        });
 
         // creates new FileWriter object, writes text currently in mainText to a file named javatextwrite
         // when save button is pressed
@@ -87,19 +97,7 @@ public class JavaText extends JFrame {
             }
         });
 
-        // reads to file when save menu item is pressed
-        /** 
-        load.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
 
-                }
-                catch (IOException exc) {
-                    System.out.println("IO exception when writing to file. Ending program.");
-                    System.exit(0);
-                }
-            }
-        });*/
         
         // adds menu items to menu bar
         //load.addActionListener(this);
