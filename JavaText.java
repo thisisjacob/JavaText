@@ -31,6 +31,10 @@ public class JavaText extends JFrame {
 
     // loads available fonts on program run
     private String[] availableFonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames(); 
+    
+    private String fontName;
+    private int fontStyle;
+    private int fontSize;
 
 
 
@@ -178,7 +182,7 @@ public class JavaText extends JFrame {
 
         JFrame mainWindow;
         JScrollPane fontSelectScroll;
-        JList fontSelect;
+        JList<String> fontSelect;
         JPanel bottomButtonPanel;
         JButton confirmSelections;
         JButton cancelSelections;
@@ -187,20 +191,32 @@ public class JavaText extends JFrame {
             super("Text Appearance Menu");
 
             mainWindow = new JFrame("Text Appearance Menu");
-            mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            mainWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             mainWindow.setLayout(new BorderLayout());
             mainWindow.setSize(WIDTH, HEIGHT);
 
             
-            fontSelect = new JList(availableFonts);
-            fontSelectScroll = new JScrollPane();
+            fontSelect = new JList<String>(availableFonts);
+            fontSelect.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+            fontSelect.setLayoutOrientation(JList.VERTICAL);
+            fontSelectScroll = new JScrollPane(fontSelect);
             fontSelectScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
             fontSelectScroll.setPreferredSize(new Dimension(WIDTH / 3, HEIGHT - 50));
-            fontSelectScroll.add(fontSelect);
 
             bottomButtonPanel = new JPanel();
             confirmSelections = new JButton("Confirm");
+            confirmSelections.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    confirmButtonAction();
+                }
+            });
             cancelSelections = new JButton("Cancel");
+            cancelSelections.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    mainWindow.setVisible(false);
+                    mainWindow.dispose();
+                }
+            });
             bottomButtonPanel.add(confirmSelections);
             bottomButtonPanel.add(cancelSelections);
 
@@ -208,6 +224,11 @@ public class JavaText extends JFrame {
             mainWindow.add(bottomButtonPanel, BorderLayout.SOUTH);
         
             mainWindow.setVisible(true);
+        }
+
+        private void confirmButtonAction() {
+            mainWindow.setVisible(false);
+            mainWindow.dispose();
         }
     }
 
