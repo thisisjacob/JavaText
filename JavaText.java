@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.io.FileReader;
 
 
-
 public class JavaText extends JFrame {
     private static final int WIDTH = 400;
     private static final int HEIGHT = 400;
@@ -27,7 +26,7 @@ public class JavaText extends JFrame {
     private ButtonGroup lineWrapGroup;
     private JRadioButtonMenuItem lineWrapTrue;
     private JRadioButtonMenuItem lineWrapFalse;
-    private JButton editText;
+    private JMenuItem openTextAppearanceMenu;
 
 
 
@@ -99,23 +98,22 @@ public class JavaText extends JFrame {
                 mainText.setLineWrap(false);
             }
         });
-        editText = new JButton("Text Appearance");
-        editText.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                new JavaTextStyleMenu();
-            }
-        });
-
         lineWrapGroup = new ButtonGroup();
         lineWrapGroup.add(lineWrapTrue);
         lineWrapGroup.add(lineWrapFalse);
         lineWrap.add(lineWrapTrue);
         lineWrap.add(lineWrapFalse);
         formatMenu.add(lineWrap);
-        formatMenu.add(editText);
+
+        openTextAppearanceMenu = new JMenuItem("Font...");
+        openTextAppearanceMenu.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new TextAppearanceWindow();
+            }
+        });
+        formatMenu.add(openTextAppearanceMenu);
+
         menuBar.add(formatMenu);
-
-
 
 
 
@@ -128,13 +126,11 @@ public class JavaText extends JFrame {
     // actions for menu buttons
 
     // creates a new FileWriter object to clear writeFile, saves text to user chosen file
-    // IMPORTANT: OVERWRITES ORIGINAL FILE
     public void saveFile() {
         try {
             JFileChooser savePath = new JFileChooser();
             int chosenPath = savePath.showSaveDialog(null);
 
-            // writes the entire mainText to chosen file, overwriting original
             if (chosenPath == JFileChooser.APPROVE_OPTION) {
                 writeFile = new FileWriter(savePath.getSelectedFile().getAbsolutePath(), false);
                 writeFile.write(mainText.getText());
@@ -143,7 +139,7 @@ public class JavaText extends JFrame {
             }   
         }
         catch (IOException exc) {
-            System.out.println("IO exception when writing to file. Ending program.");
+            System.out.println(exc);
             System.exit(0);
         }
     }
@@ -154,7 +150,6 @@ public class JavaText extends JFrame {
             JFileChooser loadPath = new JFileChooser();
             int chosenPath = loadPath.showSaveDialog(null);
 
-            // reads each token in user chosen file, appends to mainText
             if (chosenPath == loadPath.APPROVE_OPTION) {
                 readFile = new FileReader(loadPath.getSelectedFile().getAbsolutePath());
                 mainText.setText("");
@@ -165,47 +160,29 @@ public class JavaText extends JFrame {
                     mainText.append(Character.toString((char) i));
                 } 
             }  
-        } // ends program if there is an error while reading
+        }
         catch (IOException exc) {
-            System.out.println("IO exception when reading to file. Ending program.");
+            System.out.println("IO exception when writing to file. Ending program.");
             System.exit(0);
         }
     }
 
-    private class JavaTextStyleMenu extends JFrame {
-        private final int WIDTH = 200;
-        private final int HEIGHT = 200;
+    private class TextAppearanceWindow extends JFrame {
+        final int WIDTH = 100;
+        final int HEIGHT = 100;
+        JFrame mainWindow;
 
-        private JFrame mainStyleWindow;
-        private JScrollPane firstSelectorScrollPane;
-        private JList firstSelector;
-        private JScrollPane secondSelectorScrollPane;
-        private JList secondSelector;
-        private JScrollPane thirdSelectorScrollPane;
-        private JList thirdSelector;
-        private JTextArea displayArea;
-        private JButton accept;
-        private JButton cancel;
+        private TextAppearanceWindow() {
+            super("Text Appearance Menu");
 
-        // set up for a menu for changing style of text
-        public JavaTextStyleMenu() { 
-            // creates an array of available fonts on local computer
-            String availableFonts[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-            System.out.println(availableFonts);
+            mainWindow = new JFrame("Text Appearance Menu");
+            mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            mainWindow.setLayout(new BorderLayout());
+            mainWindow.setSize(WIDTH, HEIGHT);
 
-            // sets up main window
-            mainStyleWindow = new JFrame("Change Text Appearance");
-            mainStyleWindow.setSize(WIDTH, HEIGHT);
-            mainStyleWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            mainStyleWindow.setLayout(new BorderLayout());
-            mainStyleWindow.setVisible(true);
 
-            firstSelectorScrollPane = new JScrollPane();
-            firstSelector = new JList(availableFonts);
-            firstSelectorScrollPane.add(firstSelector);
-            mainStyleWindow.add(firstSelectorScrollPane, BorderLayout.WEST);
+            mainWindow.setVisible(true);
         }
-
     }
 
 }
