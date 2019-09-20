@@ -13,28 +13,20 @@ public class JavaText extends JFrame {
     private static final int HEIGHT = 800;
 
     private JFrame baseWindow;
-    private JScrollPane mainTextScrollPane;
-    private JTextArea mainText;
+    private JScrollPane mainTextScrollPane; // scrollbar for when text goes off screen
+    private JTextArea mainText; // text area user modifies
     private JMenuBar menuBar;
-    private JMenu file;
+    private JMenu file; // file dropdown menu
     private JMenuItem save;
     private JMenuItem load;
     private JMenuItem exit;
-    private FileWriter writeFile;
-    private FileReader readFile;
     private JMenu formatMenu;
     private JMenu lineWrap;
     private ButtonGroup lineWrapGroup;
     private JRadioButtonMenuItem lineWrapTrue;
     private JRadioButtonMenuItem lineWrapFalse;
     private JMenuItem openTextAppearanceMenu;
-
-    // loads available fonts on program run
-    private String[] availableFonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames(); 
     
-    private String fontName;
-    private int fontStyle;
-    private int fontSize;
 
 
 
@@ -135,10 +127,13 @@ public class JavaText extends JFrame {
 
     // creates a new FileWriter object to clear writeFile, saves text to user chosen file
     public void saveFile() {
+        // closes if IOException caught
         try {
             JFileChooser savePath = new JFileChooser();
+            FileWriter writeFile;
             int chosenPath = savePath.showSaveDialog(null);
 
+            // if user chooses a file, the contents of mainText overwrite this file
             if (chosenPath == JFileChooser.APPROVE_OPTION) {
                 writeFile = new FileWriter(savePath.getSelectedFile().getAbsolutePath(), false);
                 writeFile.write(mainText.getText());
@@ -154,17 +149,18 @@ public class JavaText extends JFrame {
 
     // creates a new FileReader object to clear readFile, reads each token in javatextwrite, converts it to readable format and appends to mainText
     public void loadFile() {
+        // closes if IOException caught
         try {
             JFileChooser loadPath = new JFileChooser();
+            FileReader readFile;
             int chosenPath = loadPath.showSaveDialog(null);
 
+            // if user chooses a file to open, the items in the file are appended one by one into mainText
             if (chosenPath == loadPath.APPROVE_OPTION) {
                 readFile = new FileReader(loadPath.getSelectedFile().getAbsolutePath());
                 mainText.setText("");
                 int i;
-                while((i = readFile.read()) != -1) {
-                    System.out.println("testing");
-                    System.out.println(i);                                                      
+                while((i = readFile.read()) != -1) {                                                   
                     mainText.append(Character.toString((char) i));
                 } 
             }  
@@ -175,64 +171,122 @@ public class JavaText extends JFrame {
         }
     }
 
+    // TODO: make function to respond to style Strings and set correct style
+    // the class for a window that allows the user to alter font appearance
     private class TextAppearanceWindow extends JFrame {
         final int WIDTH = 400;
         final int HEIGHT = 400;
         
+        // loads available fonts on program run
+        private String[] availableFonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames(); 
+        private String[] availableStyles = {"Plain", "Bold", "Italic"};
+        private Integer[] availableSizes = {6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 22, 24, 26, 27, 28, 29, 30, 32, 34, 36}; // avaible font sizes
 
         JFrame mainWindow;
-        JScrollPane fontSelectScroll;
+        JTextField previewText; // previewing changes
+        JScrollPane fontSelectScroll; // for selecting font of text
         JList<String> fontSelect;
-        JPanel bottomButtonPanel;
-        JButton confirmSelections;
-        JButton cancelSelections;
+        JScrollPane styleSelectScroll; // for selecting style of text
+        JList<String> styleSelect;
+        JScrollPane fontSizeSelectScroll; // for selecting size of text
+        JList<Integer> fontSizeSelect;
+        JPanel bottomButtonPanel; // confirm/cancel panel
+        JButton confirmSelections; // confirms, makes chosen changes, closes window
+        JButton cancelSelections; // cancels, no changes made, closes window
 
         private TextAppearanceWindow() {
             super("Text Appearance Menu");
 
-            mainWindow = new JFrame("Text Appearance Menu");
+            mainWindow = new JFrame("Text Appearance Menu"); // creates main window
             mainWindow.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             mainWindow.setLayout(new BorderLayout());
             mainWindow.setSize(WIDTH, HEIGHT);
 
+            // initializes preview text
+            previewText = new JTextField("Preview Text");
+
             
-            fontSelect = new JList<String>(availableFonts);
+            fontSelect = new JList<String>(availableFonts); // sets up fontSelect and its JScrollPane
             fontSelect.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             fontSelect.setLayoutOrientation(JList.VERTICAL);
             fontSelectScroll = new JScrollPane(fontSelect);
             fontSelectScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
             fontSelectScroll.setPreferredSize(new Dimension(WIDTH / 3, HEIGHT - 50));
 
-            bottomButtonPanel = new JPanel();
+            styleSelect = new JList<String>(availableStyles); // sets up styleSelect and its JScrollPane
+            styleSelect.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            styleSelect.setLayoutOrientation(JList.VERTICAL);
+            styleSelectScroll = new JScrollPane(styleSelect);
+            styleSelectScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            styleSelectScroll.setPreferredSize(new Dimension(WIDTH / 3, HEIGHT - 50));
+
+            fontSizeSelect = new JList<Integer>(availableSizes); // sets up fontSizeSelect and its JScrollPane
+            fontSizeSelect.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            fontSizeSelect.setLayoutOrientation(JList.VERTICAL);
+            fontSizeSelectScroll = new JScrollPane(fontSizeSelect);
+            fontSizeSelectScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            fontSizeSelectScroll.setPreferredSize(new Dimension(WIDTH / 3, HEIGHT - 50));
+
+            bottomButtonPanel = new JPanel(); // creates a button panel at bottom, adds Confirm and Cancel buttons
             confirmSelections = new JButton("Confirm");
-            confirmSelections.addActionListener(new ActionListener() {
+            confirmSelections.addActionListener(new ActionListener() { // saves font changes, closes window
                 public void actionPerformed(ActionEvent e) {
                     confirmButtonAction();
                 }
             });
             cancelSelections = new JButton("Cancel");
-            cancelSelections.addActionListener(new ActionListener() {
+            cancelSelections.addActionListener(new ActionListener() { // closes window, does not change font
                 public void actionPerformed(ActionEvent e) {
                     mainWindow.setVisible(false);
                     mainWindow.dispose();
                 }
             });
-            bottomButtonPanel.add(confirmSelections);
+            bottomButtonPanel.add(confirmSelections); 
             bottomButtonPanel.add(cancelSelections);
 
+            // adds sections to areas of window
+            mainWindow.add(previewText, BorderLayout.NORTH);
             mainWindow.add(fontSelectScroll, BorderLayout.WEST);
+            mainWindow.add(styleSelectScroll, BorderLayout.CENTER);
+            mainWindow.add(fontSizeSelectScroll, BorderLayout.EAST);
             mainWindow.add(bottomButtonPanel, BorderLayout.SOUTH);
         
             mainWindow.setVisible(true);
         }
 
-        private void confirmButtonAction() {
+        private void confirmButtonAction() { // if confirmed, change font to what user chose, close window
             if (!fontSelect.isSelectionEmpty()) {
-                mainText.setFont(new Font(fontSelect.getSelectedValue(), Font.PLAIN, 11));
+                Font currentFont = mainText.getFont(); // copys current mainText Font into currentFont
+                mainText.setFont(new Font(fontSelect.getSelectedValue(), currentFont.getStyle(), currentFont.getSize())); // changes font based on fontSelect, others are kept as they are
+            } 
+            if (!styleSelect.isSelectionEmpty()) {
+                Font currentFont = mainText.getFont();
+                mainText.setFont(new Font(currentFont.getFontName(), findStyleConstant(styleSelect.getSelectedValue()), currentFont.getSize()));
             }
+            if (!fontSizeSelect.isSelectionEmpty()) {
+                Font currentFont = mainText.getFont();
+                mainText.setFont(new Font(currentFont.getFontName(), currentFont.getStyle(), fontSizeSelect.getSelectedValue()));
+            }
+
             mainWindow.setVisible(false);
             mainWindow.dispose();
         }
+
+        private int findStyleConstant(String givenStyleString) {
+            if (givenStyleString.equals("Plain")) {
+                return Font.PLAIN;
+            }
+            else if (givenStyleString.equals("Bold")) {
+                return Font.BOLD;
+            }
+            else if (givenStyleString.equals("Italic")) {
+                return Font.ITALIC;
+            }
+
+            return Font.PLAIN; // if not one of available fonts, return to plain default
+
+        }
+
     }
 
 }
