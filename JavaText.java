@@ -87,13 +87,13 @@ public class JavaText extends JFrame {
         formatMenu = new JMenu("Formatting");
         lineWrap = new JMenu("Line Wrapping");
         lineWrapTrue = new JRadioButtonMenuItem("Line Wrap On");
-        lineWrapTrue.addActionListener(new ActionListener() {
+        lineWrapTrue.addActionListener(new ActionListener() { // for enabling linewrap
             public void actionPerformed(ActionEvent e) {
                 mainText.setLineWrap(true);
             }
         });
         lineWrapFalse = new JRadioButtonMenuItem("Line Wrap Off");
-        lineWrapFalse.addActionListener(new ActionListener() {
+        lineWrapFalse.addActionListener(new ActionListener() { // for disabling linewrap
             public void actionPerformed(ActionEvent e) {
                 mainText.setLineWrap(false);
             }
@@ -105,7 +105,7 @@ public class JavaText extends JFrame {
         lineWrap.add(lineWrapFalse);
         formatMenu.add(lineWrap);
 
-        openTextAppearanceMenu = new JMenuItem("Font...");
+        openTextAppearanceMenu = new JMenuItem("Font..."); // adds font window button to text appearance menu
         openTextAppearanceMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 new TextAppearanceWindow();
@@ -225,6 +225,22 @@ public class JavaText extends JFrame {
             fontSizeSelectScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
             fontSizeSelectScroll.setPreferredSize(new Dimension(WIDTH / 3, HEIGHT - 50));
 
+            fontSelect.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+                public void valueChanged(javax.swing.event.ListSelectionEvent e) {
+                    updatePreview();
+                }
+            });
+            styleSelect.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+                public void valueChanged(javax.swing.event.ListSelectionEvent e) {
+                    updatePreview();
+                }
+            });
+            fontSizeSelect.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+                public void valueChanged(javax.swing.event.ListSelectionEvent e) {
+                    updatePreview();
+                }
+            });
+
             bottomButtonPanel = new JPanel(); // creates a button panel at bottom, adds Confirm and Cancel buttons
             confirmSelections = new JButton("Confirm");
             confirmSelections.addActionListener(new ActionListener() { // saves font changes, closes window
@@ -252,11 +268,29 @@ public class JavaText extends JFrame {
             mainWindow.setVisible(true);
         }
 
+        // updates the preview text
+        private void updatePreview() {
+            if (!fontSelect.isSelectionEmpty()) {
+                Font currentFont = previewText.getFont(); // copys current mainText Font into currentFont
+                previewText.setFont(new Font(fontSelect.getSelectedValue(), currentFont.getStyle(), currentFont.getSize())); // changes font based on fontSelect, others are kept as they are
+            } 
+            if (!styleSelect.isSelectionEmpty()) {
+                Font currentFont = previewText.getFont();
+                previewText.setFont(new Font(currentFont.getFontName(), findStyleConstant(styleSelect.getSelectedValue()), currentFont.getSize()));
+            }
+            if (!fontSizeSelect.isSelectionEmpty()) {
+                Font currentFont = previewText.getFont();
+                previewText.setFont(new Font(currentFont.getFontName(), currentFont.getStyle(), fontSizeSelect.getSelectedValue()));
+            }
+
+
+        }
+
         private void confirmButtonAction() { // if confirmed, change font to what user chose, close window
             if (!fontSelect.isSelectionEmpty()) {
                 Font currentFont = mainText.getFont(); // copys current mainText Font into currentFont
                 mainText.setFont(new Font(fontSelect.getSelectedValue(), currentFont.getStyle(), currentFont.getSize())); // changes font based on fontSelect, others are kept as they are
-            } 
+            }                                                                                                             // same for others, does each in turn based on if each list selector is empty or not
             if (!styleSelect.isSelectionEmpty()) {
                 Font currentFont = mainText.getFont();
                 mainText.setFont(new Font(currentFont.getFontName(), findStyleConstant(styleSelect.getSelectedValue()), currentFont.getSize()));
