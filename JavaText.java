@@ -162,9 +162,7 @@ public class JavaText extends JFrame {
                 readFile = new FileReader(loadPath.getSelectedFile().getAbsolutePath());
                 mainText.setText("");
                 int i;
-                while((i = readFile.read()) != -1) {
-                    System.out.println("testing");
-                    System.out.println(i);                                                      
+                while((i = readFile.read()) != -1) {                                                      
                     mainText.append(Character.toString((char) i));
                 } 
             }  
