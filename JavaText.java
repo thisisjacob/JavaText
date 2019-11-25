@@ -201,7 +201,10 @@ public class JavaText extends JFrame {
             mainWindow.setSize(WIDTH, HEIGHT);
 
             // initializes preview text
-            previewText = new JTextField("Preview Text");
+            previewText = new JTextField("Font Preview");
+            previewText.setPreferredSize(new Dimension(WIDTH, 50)); // allows all font sizes to fit previewText field
+            previewText.setEditable(false);
+            previewText.setHorizontalAlignment(JTextField.CENTER);
 
             
             fontSelect = new JList<String>(availableFonts); // sets up fontSelect and its JScrollPane
