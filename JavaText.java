@@ -25,6 +25,10 @@ public class JavaText extends JFrame {
     private ButtonGroup lineWrapGroup;
     private JRadioButtonMenuItem lineWrapTrue;
     private JRadioButtonMenuItem lineWrapFalse;
+    private JMenu wrapStyle;
+    private ButtonGroup wrapStyleGroup;
+    private JRadioButtonMenuItem wrapStyleTrue;
+    private JRadioButtonMenuItem wrapStyleFalse;
     private JMenuItem openTextAppearanceMenu;
     
 
@@ -85,6 +89,8 @@ public class JavaText extends JFrame {
 
         // sets up formatting menu
         formatMenu = new JMenu("Formatting");
+
+        // adds line wrap options to formatting menu
         lineWrap = new JMenu("Line Wrapping");
         lineWrapTrue = new JRadioButtonMenuItem("Line Wrap On");
         lineWrapTrue.addActionListener(new ActionListener() { // for enabling linewrap
@@ -104,6 +110,26 @@ public class JavaText extends JFrame {
         lineWrap.add(lineWrapTrue);
         lineWrap.add(lineWrapFalse);
         formatMenu.add(lineWrap);
+
+        wrapStyle = new JMenu("Wrap Style");
+        wrapStyleTrue = new JRadioButtonMenuItem("Word Wrap");
+        wrapStyleTrue.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                mainText.setWrapStyleWord(true);
+            }
+        });
+        wrapStyleFalse = new JRadioButtonMenuItem("Character Wrap");
+        wrapStyleFalse.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                mainText.setWrapStyleWord(false);
+            }
+        });
+        wrapStyleGroup = new ButtonGroup();
+        wrapStyleGroup.add(wrapStyleTrue);
+        wrapStyleGroup.add(wrapStyleFalse);
+        wrapStyle.add(wrapStyleTrue);
+        wrapStyle.add(wrapStyleFalse);
+        formatMenu.add(wrapStyle);
 
         openTextAppearanceMenu = new JMenuItem("Font..."); // adds font window button to text appearance menu
         openTextAppearanceMenu.addActionListener(new ActionListener() {
