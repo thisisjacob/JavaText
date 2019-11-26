@@ -1,7 +1,7 @@
 # JavaText
 
 
-A Notepade-style text editor made with the Java standard library, using Swing and AWT.
+A Notepad-style text editor made with the Java standard library, using Swing and AWT.
 
 Can save and load text files, customize the font and behavior, and extend in size as the user adds more text.
 
