@@ -118,7 +118,7 @@ public class JavaText extends JFrame {
                 mainText.setWrapStyleWord(true);
             }
         });
-        wrapStyleFalse = new JRadioButtonMenuItem("Character Wrap");
+        wrapStyleFalse = new JRadioButtonMenuItem("Character Wrap", true);
         wrapStyleFalse.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 mainText.setWrapStyleWord(false);
